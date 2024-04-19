@@ -1,0 +1,64 @@
+﻿<RadzenText Text="Motor vibrations over time" TextStyle="Radzen.Blazor.TextStyle.H5" TagName="Radzen.Blazor.TagName.H4" class="mt-6" TextAlign="Radzen.TextAlign.Left"></RadzenText>
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12 my-5">
+            <RadzenChart>
+                <RadzenLineSeries Smooth="@smooth" Data="@motorData" CategoryProperty="Time" Title="Motor Vibration" LineType="LineType.Dashed" ValueProperty="Vibration">
+                    <RadzenMarkers Visible="@showMarkers" MarkerType="MarkerType.Square" />
+                    <RadzenSeriesDataLabels Visible="@showDataLabels" />
+                </RadzenLineSeries>
+                <RadzenCategoryAxis Padding="20" Formatter="@FormatAsSeconds" />
+                <RadzenValueAxis Formatter="@FormatAsVibrationUnit">
+                    <RadzenGridLines Visible="true" />
+                    <RadzenAxisTitle Text="Vibration (Unit)" />
+                </RadzenValueAxis>
+            </RadzenChart>
+        </div>
+    </div>
+</div>
+
+@code {
+    bool smooth = true;
+    bool showDataLabels = false;
+    bool showMarkers = false;
+    int dataPoints = 100; // Number of data points to generate
+
+    class MotorData
+    {
+        public double Time { get; set; } // Replace with actual time unit based on data source
+        public double Vibration { get; set; }
+    }
+
+    string FormatAsSeconds(object value)
+    {
+        return ((double)value).ToString("0.00 s"); // Adjust format as needed
+    }
+
+    string FormatAsVibrationUnit(object value)
+    {
+        // Implement logic to format vibration unit based on your data
+        return ((double)value).ToString("0.00 V"); // Example format (replace V with your unit)
+    }
+
+    MotorData[] motorData = new MotorData[0]; // Initialize empty array
+
+    protected override void OnInitialized()
+    {
+        GenerateRandomData();
+    }
+
+    void GenerateRandomData()
+    {
+        Random random = new Random();
+        motorData = new MotorData[dataPoints];
+        for (int i = 0; i < dataPoints; i++)
+        {
+            motorData[i] = new MotorData
+                {
+                    Time = i, // Replace with actual time values if needed
+                    Vibration = random.NextDouble() * 2 - 1 // Generate random vibration between -1 and 1
+                };
+        }
+    }
+}

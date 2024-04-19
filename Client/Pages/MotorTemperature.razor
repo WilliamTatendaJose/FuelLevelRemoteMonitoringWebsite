@@ -1,0 +1,67 @@
+﻿<RadzenText Text="Motor Temperature over time" TextStyle="Radzen.Blazor.TextStyle.H5" TagName="Radzen.Blazor.TagName.H4" class="mt-6" TextAlign="Radzen.TextAlign.Left"></RadzenText>
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12 my-5">
+            <RadzenChart>
+                <RadzenLineSeries Smooth="@smooth" Data="@temperatureData" CategoryProperty="Time" Title="Motor Temperature" LineType="LineType.Solid" ValueProperty="Temperature">
+                    <RadzenMarkers Visible="@showMarkers" MarkerType="MarkerType.Square" />
+                    <RadzenSeriesDataLabels Visible="@showDataLabels" />
+                </RadzenLineSeries>
+                <RadzenCategoryAxis Padding="20" Formatter="@FormatAsSeconds" />
+                <RadzenValueAxis Formatter="@FormatAsTemperature">
+                    <RadzenGridLines Visible="true" />
+                    <RadzenAxisTitle Text="Temperature (Unit)" />
+                </RadzenValueAxis>
+            </RadzenChart>
+        </div>
+    </div>
+</div>
+
+@code {
+    bool smooth = true;
+    bool showDataLabels = false;
+    bool showMarkers = false;
+    int dataPoints = 100; // Number of data points to generate
+
+    class TemperatureData
+    {
+        public double Time { get; set; } // Replace with actual time unit based on data source
+        public double Temperature { get; set; }
+    }
+
+    string FormatAsSeconds(object value)
+    {
+        return ((double)value).ToString("0.00 s"); // Adjust format as needed
+    }
+
+    string FormatAsTemperature(object value)
+    {
+        return ((double)value).ToString("0.00 Degree C"); // Example format (replace V with your unit)
+    }
+
+    TemperatureData[] temperatureData = new TemperatureData[0]; // Initialize empty array
+
+    protected override void OnInitialized()
+    {
+        GenerateRandomTemperatureData();
+    }
+
+    void GenerateRandomTemperatureData()
+    {
+        Random random = new Random();
+        temperatureData = new TemperatureData[dataPoints];
+        for (int i = 0; i < dataPoints; i++)
+        {
+            double baseTemperature = 40; // Base temperature (40Degree C)
+            double deviation = random.NextDouble() * 2 - 1; // Random deviation between -1.5 AND+1.5
+            double temperature = baseTemperature + deviation;
+
+            temperatureData[i] = new TemperatureData
+                {
+                    Time = i, // Replace with actual time values if needed
+                    Temperature = temperature
+                };
+        }
+    }
+}

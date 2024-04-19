@@ -1,0 +1,67 @@
+﻿<RadzenText Text="Motor Voltage over time" TextStyle="Radzen.Blazor.TextStyle.H5" TagName="Radzen.Blazor.TagName.H4" class="mt-6" TextAlign="Radzen.TextAlign.Left"></RadzenText>
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12 my-5">
+            <RadzenChart>
+                <RadzenLineSeries Smooth="@smooth" Data="@voltageData" CategoryProperty="Time" Title="Motor Voltage" LineType="LineType.Solid" ValueProperty="Voltage">
+                    <RadzenMarkers Visible="@showMarkers" MarkerType="MarkerType.Square" />
+                    <RadzenSeriesDataLabels Visible="@showDataLabels" />
+                </RadzenLineSeries>
+                <RadzenCategoryAxis Padding="20" Formatter="@FormatAsSeconds" />
+                <RadzenValueAxis Formatter="@FormatAsVoltage">
+                    <RadzenGridLines Visible="true" />
+                    <RadzenAxisTitle Text="Voltage (Unit)" />
+                </RadzenValueAxis>
+            </RadzenChart>
+        </div>
+    </div>
+</div>
+
+@code {
+    bool smooth = true;
+    bool showDataLabels = false;
+    bool showMarkers = false;
+    int dataPoints = 100; // Number of data points to generate
+
+    class VoltageData
+    {
+        public double Time { get; set; } // Replace with actual time unit based on data source
+        public double Voltage { get; set; }
+    }
+
+    string FormatAsSeconds(object value)
+    {
+        return ((double)value).ToString("0.00 s"); // Adjust format as needed
+    }
+
+    string FormatAsVoltage(object value)
+    {
+        return ((double)value).ToString("0.00 V"); // Example format (replace V with your unit)
+    }
+
+    VoltageData[] voltageData = new VoltageData[0]; // Initialize empty array
+
+    protected override void OnInitialized()
+    {
+        GenerateRandomVoltageData();
+    }
+
+    void GenerateRandomVoltageData()
+    {
+        Random random = new Random();
+        voltageData = new VoltageData[dataPoints];
+        for (int i = 0; i < dataPoints; i++)
+        {
+            double baseVoltage = 220.0; // Base voltage (220V)
+            double deviation = random.NextDouble() * 4 - 2; // Random deviation between -2V and +2V
+            double voltage = baseVoltage + deviation;
+
+            voltageData[i] = new VoltageData
+                {
+                    Time = i, // Replace with actual time values if needed
+                    Voltage = voltage
+                };
+        }
+    }
+}

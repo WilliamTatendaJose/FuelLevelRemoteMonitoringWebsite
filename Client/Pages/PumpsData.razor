@@ -1,0 +1,12 @@
+@page "/pumps--data"
+
+@attribute [Authorize]
+
+<PageTitle>Motor Parameters</PageTitle>
+<RadzenText Text="Real-time Pump Parameters" TextStyle="Radzen.Blazor.TextStyle.H4" TagName="Radzen.Blazor.TagName.H4" class="mt-6" TextAlign="Radzen.TextAlign.Left"></RadzenText>
+<br />
+<MotorVibrations />
+<MotorVoltage/>
+<MotorCurrent/>
+<MotorFlowRate/>
+<MotorTemperature/>

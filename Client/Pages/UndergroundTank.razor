@@ -1,0 +1,39 @@
+﻿<div class=" row">
+    <div class="fuel-tank">
+        <div class="fuel-level" style="height: @FuelLevelPercentage%">
+            @FuelLevelPercentage% Full
+        </div>
+    </div>
+
+</div>
+
+
+
+<style>
+    .fuel-tank {
+        width: 400px; /* Adjust the width of the fuel tank as needed */
+        height: 450px;
+        background-color: #f0f0f0;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .fuel-level {
+        width: 100%;
+        background-color: #4caff0; /* Green color for fuel */
+        transition: height 0.5s ease; /* Smooth transition animation */
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        text-align: center;
+        color: white;
+        font-weight: bold;
+    }
+</style>
+
+@code {
+    private int FuelLevelPercentage = 40; // Example: 75% full
+
+    // You can update the FuelLevelPercentage dynamically based on actual data
+    // For instance, retrieve the fuel level from an API or database.
+}

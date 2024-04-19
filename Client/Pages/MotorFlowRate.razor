@@ -1,0 +1,67 @@
+﻿<RadzenText Text="Motor FlowRate over time" TextStyle="Radzen.Blazor.TextStyle.H5" TagName="Radzen.Blazor.TagName.H4" class="mt-6" TextAlign="Radzen.TextAlign.Left"></RadzenText>
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12 my-5">
+            <RadzenChart>
+                <RadzenLineSeries Smooth="@smooth" Data="@flowRateData" CategoryProperty="Time" Title="Motor FlowRate" LineType="LineType.Solid" ValueProperty="FlowRate">
+                    <RadzenMarkers Visible="@showMarkers" MarkerType="MarkerType.Square" />
+                    <RadzenSeriesDataLabels Visible="@showDataLabels" />
+                </RadzenLineSeries>
+                <RadzenCategoryAxis Padding="20" Formatter="@FormatAsSeconds" />
+                <RadzenValueAxis Formatter="@FormatAsFlowRate">
+                    <RadzenGridLines Visible="true" />
+                    <RadzenAxisTitle Text="FlowRate (Unit)" />
+                </RadzenValueAxis>
+            </RadzenChart>
+        </div>
+    </div>
+</div>
+
+@code {
+    bool smooth = true;
+    bool showDataLabels = false;
+    bool showMarkers = false;
+    int dataPoints = 100; // Number of data points to generate
+
+    class FlowRateData
+    {
+        public double Time { get; set; } // Replace with actual time unit based on data source
+        public double FlowRate { get; set; }
+    }
+
+    string FormatAsSeconds(object value)
+    {
+        return ((double)value).ToString("0.00 s"); // Adjust format as needed
+    }
+
+    string FormatAsFlowRate(object value)
+    {
+        return ((double)value).ToString("0.00 L/Min"); // Example format (replace V with your unit)
+    }
+
+    FlowRateData[] flowRateData = new FlowRateData[0]; // Initialize empty array
+
+    protected override void OnInitialized()
+    {
+        GenerateRandomFlowRateData();
+    }
+
+    void GenerateRandomFlowRateData()
+    {
+        Random random = new Random();
+        flowRateData = new FlowRateData[dataPoints];
+        for (int i = 0; i < dataPoints; i++)
+        {
+            double baseFlowRate = 20.0; // Base flowRate (20)
+            double deviation = random.NextDouble() * 2 - 0.5; // Random deviation between -1.5 AND+1.5
+            double flowRate = baseFlowRate + deviation;
+
+            flowRateData[i] = new FlowRateData
+                {
+                    Time = i, // Replace with actual time values if needed
+                    FlowRate = flowRate
+                };
+        }
+    }
+}

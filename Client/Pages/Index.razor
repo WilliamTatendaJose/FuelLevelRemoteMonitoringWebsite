@@ -1,0 +1,35 @@
+@page "/"
+
+
+@attribute [Authorize]
+<PageTitle>Index</PageTitle>
+<RadzenText Text="Welcome, Monitor fuel levels in the tanks" TextStyle="Radzen.Blazor.TextStyle.H5" TagName="Radzen.Blazor.TagName.H4" class="mt-6"  TextAlign="Radzen.TextAlign.Left"></RadzenText>
+
+
+
+<br />
+
+<RadzenRow class="rz-text-align-center" Gap="1rem">
+	<RadzenColumn>
+		<RadzenText Text="Undergound Tank Fuel Level" TextStyle="Radzen.Blazor.TextStyle.H6" TagName="Radzen.Blazor.TagName.H4" class="mt-6" TextAlign="Radzen.TextAlign.Left"></RadzenText>
+		<UndergroundTank/>
+	</RadzenColumn>
+	<RadzenColumn>
+		<RadzenText Text="Burner Fuel Level" TextStyle="Radzen.Blazor.TextStyle.H6" TagName="Radzen.Blazor.TagName.H4" class="mt-6" TextAlign="Radzen.TextAlign.Left"></RadzenText>
+		<UndergroundTank/>
+	</RadzenColumn>
+	
+</RadzenRow>
+
+<br/>
+<RadzenRow class="rz-text-align-center" Gap="1rem">
+	<RadzenColumn>
+		<RadzenText Text="Boiler Tank Fuel Level" TextStyle="Radzen.Blazor.TextStyle.H6" TagName="Radzen.Blazor.TagName.H4" class="mt-6" TextAlign="Radzen.TextAlign.Left"></RadzenText>
+		<UndergroundTank/>
+	</RadzenColumn>
+	<RadzenColumn>
+		<RadzenText Text="Generator Fuel Level" TextStyle="Radzen.Blazor.TextStyle.H6" TagName="Radzen.Blazor.TagName.H4" class="mt-6" TextAlign="Radzen.TextAlign.Left"></RadzenText>
+		<UndergroundTank/>
+	</RadzenColumn>
+	
+</RadzenRow>

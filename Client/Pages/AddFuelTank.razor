@@ -1,0 +1,39 @@
+@page "/add-fuel-tank"
+
+@attribute [Authorize]
+<PageTitle>Add FuelTank</PageTitle>
+    <RadzenColumn SizeMD=12>
+        <RadzenAlert Shade="Shade.Lighter" Variant="Variant.Flat" Size="AlertSize.Small" AlertStyle="AlertStyle.Danger" Visible="@errorVisible">Cannot save FuelTank</RadzenAlert>
+        <RadzenTemplateForm TItem="DeanRemoteMonitoringWeb.Server.Models.RAZDEN.FuelTank" Data="@fuelTank" Visible="@(fuelTank != null)" Submit="@FormSubmit">
+          <RadzenStack>
+            <RadzenFormField Text="Tank" Variant="Variant.Filled">
+                  <ChildContent>
+                    <RadzenNumeric style="display: block; width: 100%" @bind-Value="@fuelTank.Tank" Name="Tank" />
+                  </ChildContent>    
+                  <Helper>
+                    <RadzenRequiredValidator Component="Tank" Text="Tank is required" />
+                  </Helper>
+            </RadzenFormField>
+            <RadzenFormField Text="Fuel Left" Variant="Variant.Filled">
+                  <ChildContent>
+                    <RadzenNumeric style="display: block; width: 100%" @bind-Value="@fuelTank.FuelLeft" Name="FuelLeft" />
+              </ChildContent>
+            </RadzenFormField>
+            <RadzenFormField Text="Fuel Comsumed Day" Variant="Variant.Filled">
+                  <ChildContent>
+                    <RadzenNumeric style="display: block; width: 100%" @bind-Value="@fuelTank.FuelComsumedDay" Name="FuelComsumedDay" />
+              </ChildContent>
+            </RadzenFormField>
+            <RadzenFormField Text="Date" Variant="Variant.Filled">
+                  <ChildContent>
+                    <RadzenDatePicker DateFormat="dd/MM/yyyy" style="display: block; width: 100%" @bind-Value="@fuelTank.Date" Name="Date" />
+              </ChildContent>
+            </RadzenFormField>
+          </RadzenStack>
+          <RadzenStack style="margin-top:1rem;" Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.End" Gap="0.5rem">
+                    <RadzenButton ButtonStyle="ButtonStyle.Primary" ButtonType="ButtonType.Submit" Icon="save" Text="Save" Variant="Variant.Flat" />
+                    <RadzenButton ButtonStyle="ButtonStyle.Light" Text="Cancel" Variant="Variant.Flat" Click="@CancelButtonClick"  />
+          </RadzenStack>
+        </RadzenTemplateForm>
+    </RadzenColumn>
+
