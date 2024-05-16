@@ -1,33 +1,72 @@
 @page "/pumps--data"
 @using Microsoft.AspNetCore.SignalR.Client
+@using Syncfusion.Blazor.Charts
 @attribute [Authorize]
 
 <PageTitle>Motor Parameters</PageTitle>
-<RadzenText Text="Real-time Pump Parameters" TextStyle="Radzen.Blazor.TextStyle.H4" TagName="Radzen.Blazor.TagName.H4" class="mt-6" TextAlign="Radzen.TextAlign.Left"></RadzenText>
+<RadzenText Text="Real time Pump Parameters" TextStyle="Radzen.Blazor.TextStyle.H4" TagName="Radzen.Blazor.TagName.H4" class="mt-6" TextAlign="Radzen.TextAlign.Left"></RadzenText>
 <br />
-@code {
-    private double Voltage;
-    private double Current;
-    private double FlowRate;
-    private double Vibration;
-    private double Temperature;
-}
 
-@foreach (var item in messages)
-{
-    Voltage = @item.Voltage;
+<div style="width:100%; height:20%;">
 
-    Current = @item.Current;
-    Vibration = @item.Vibration;
-    FlowRate = @item.FlowRate;
-    Temperature = @item.Temperature;
-}
+<SfChart Title="Pump Voltage" >
+    <ChartPrimaryXAxis LabelPlacement="LabelPlacement.OnTicks" LabelIntersectAction="LabelIntersectAction.Rotate45" ValueType="Syncfusion.Blazor.Charts.ValueType.Category"></ChartPrimaryXAxis>
+   
+	
+	<ChartPrimaryYAxis Title="Voltage/V" >
+	</ChartPrimaryYAxis>
+    <ChartSeriesCollection>
+        <ChartSeries DataSource="@messages" XName="Timestamp" YName="Voltage" Type="ChartSeriesType.Line">
+        </ChartSeries>
+    </ChartSeriesCollection>
+</SfChart>
+</div>
+<div style="width:100%; height:20%;">
+<SfChart Title="Pump Current">
+    <ChartPrimaryXAxis LabelPlacement="LabelPlacement.OnTicks" LabelIntersectAction="LabelIntersectAction.Rotate45" ValueType="Syncfusion.Blazor.Charts.ValueType.Category"></ChartPrimaryXAxis>
+    <ChartPrimaryYAxis Title="Current/A">
+    </ChartPrimaryYAxis>
+    <ChartSeriesCollection>
+        <ChartSeries DataSource="@messages" XName="Timestamp" YName="Current" Type="ChartSeriesType.Line">
+        </ChartSeries>
+    </ChartSeriesCollection>
+</SfChart>
+</div>
+<div style="width:100%; height:20%;">
+<SfChart Title="Pump Vibrations" >
+    <ChartPrimaryXAxis LabelPlacement="LabelPlacement.OnTicks" LabelIntersectAction="LabelIntersectAction.Rotate45"  ValueType="Syncfusion.Blazor.Charts.ValueType.Category"></ChartPrimaryXAxis>
+    <ChartPrimaryYAxis Title="Vibrations/Hz">
+    </ChartPrimaryYAxis>
+    <ChartSeriesCollection>
+        <ChartSeries DataSource="@messages" XName="Timestamp" YName="Vibration" Type="ChartSeriesType.Line">
+        </ChartSeries>
+    </ChartSeriesCollection>
+</SfChart>
+</div>
+<div style="width:100%; height:20%;">
+<SfChart Title="Pump Flow Rate" >
+    <ChartPrimaryXAxis LabelPlacement="LabelPlacement.OnTicks" LabelIntersectAction="LabelIntersectAction.Rotate45" ValueType="Syncfusion.Blazor.Charts.ValueType.Category"></ChartPrimaryXAxis>
+    <ChartPrimaryYAxis Title="Flow Rate /L/Min">
+    </ChartPrimaryYAxis>
+    <ChartSeriesCollection>
+        <ChartSeries DataSource="@messages" XName="Timestamp" YName="FlowRate" Type="ChartSeriesType.Line">
+        </ChartSeries>
+    </ChartSeriesCollection>
+</SfChart>
+</div>
+<div style="width:100%; height:20%;">
+<SfChart Title="Pump Temperature">
+    <ChartPrimaryXAxis LabelPlacement="LabelPlacement.OnTicks" LabelIntersectAction="LabelIntersectAction.Rotate45" ValueType="Syncfusion.Blazor.Charts.ValueType.Category"></ChartPrimaryXAxis>
+    <ChartPrimaryYAxis Title="Temperature /degree C">
+    </ChartPrimaryYAxis>
+    <ChartSeriesCollection>
+        <ChartSeries DataSource="@messages" XName="Timestamp" YName="Temperature" Type="ChartSeriesType.Line">
+        </ChartSeries>
+    </ChartSeriesCollection>
+</SfChart>
+</div>
 
-<MotorVibrations />
-<MotorVoltage/>
-<MotorCurrent/>
-<MotorFlowRate FlowRateValue="@FlowRate"/>
-<MotorTemperature/>
+
 
 
 
@@ -53,6 +92,7 @@
         //Registers handler that will be invoked when the hub method with the specified method name is invoked.
         hubConnection.On<TelemetryPayload>("telemetryPayload", (telemetryPayload) =>
         {
+            //telemetryPayload.Timestamp = DateTime.Now;
             messages.Add(telemetryPayload);
             StateHasChanged(); //This tells Blazor that the UI needs to be updated
         });
@@ -85,5 +125,8 @@
         public double BoilerFuelLevel { get; set; }
         public double GeneratorFuelLevel { get; set; }
 
+        public DateTime Timestamp { get; set; }
+
     }
+
 }

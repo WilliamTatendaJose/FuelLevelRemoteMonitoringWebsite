@@ -7,13 +7,17 @@ using DeanRemoteMonitoringWeb.Server.Data;
 using Microsoft.AspNetCore.Identity;
 using DeanRemoteMonitoringWeb.Server.Models;
 using Microsoft.AspNetCore.Components.Authorization;
+using Syncfusion.Blazor;
+using Syncfusion.Licensing;
 
 var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorComponents().AddInteractiveServerComponents().AddHubOptions(options => options.MaximumReceiveMessageSize = 10 * 1024 * 1024).AddInteractiveWebAssemblyComponents();
 builder.Services.AddControllers();
 builder.Services.AddRadzenComponents();
+builder.Services.AddSyncfusionBlazor();
 builder.Services.AddHttpClient();
+Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("Ngo9BigBOggjHTQxAR8/V1NBaF5cXmZCf1FpRmJGdld5fUVHYVZUTXxaS00DNHVRdkdnWXpfdnVTR2ldUENxXEE=");
 builder.Services.AddScoped<DeanRemoteMonitoringWeb.Server.RAZDENService>();
 builder.Services.AddDbContext<RAZDENContext>(options =>
 {
