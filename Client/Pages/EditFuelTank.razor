@@ -1,6 +1,6 @@
 @page "/edit-fuel-tank"
 
-@attribute [Authorize]
+@attribute [Authorize(Roles = "Admin")]
 <PageTitle>Edit FuelTank</PageTitle>
 
     <RadzenColumn SizeMD=12>

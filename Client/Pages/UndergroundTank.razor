@@ -1,7 +1,7 @@
 ﻿<div class=" row">
     <div class="fuel-tank">
-        <div class="fuel-level" style="height: @FuelLevelPercentage%">
-            @FuelLevelPercentage% Full
+        <div class="fuel-level" style="height: @FuelLevel%">
+            @FuelLevel% Full
         </div>
     </div>
 
@@ -32,7 +32,10 @@
 </style>
 
 @code {
-    private int FuelLevelPercentage = 40; // Example: 75% full
+
+    [Parameter] 
+    public double FuelLevel{ get; set; }
+
 
     // You can update the FuelLevelPercentage dynamically based on actual data
     // For instance, retrieve the fuel level from an API or database.

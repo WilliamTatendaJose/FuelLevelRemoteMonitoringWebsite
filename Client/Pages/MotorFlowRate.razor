@@ -24,12 +24,24 @@
     bool showMarkers = false;
     int dataPoints = 100; // Number of data points to generate
 
+    [Parameter]
+    public double FlowRateValue{ get; set; }
+
     class FlowRateData
     {
-        public double Time { get; set; } // Replace with actual time unit based on data source
+        public DateTime Time { get; set; } // Replace with actual time unit based on data source
         public double FlowRate { get; set; }
     }
+    private List<FlowRateData> flowRateData = new List<FlowRateData>();
 
+    void AddFlowRateData(double FlowRateValue)
+    {
+        flowRateData.Add(new FlowRateData
+            {
+                FlowRate = FlowRateValue,
+                Time = DateTime.Now
+            });
+    }
     string FormatAsSeconds(object value)
     {
         return ((double)value).ToString("0.00 s"); // Adjust format as needed
@@ -37,31 +49,15 @@
 
     string FormatAsFlowRate(object value)
     {
-        return ((double)value).ToString("0.00 L/Min"); // Example format (replace V with your unit)
+        return ((double)value).ToString("0.00 L/Min"); // Example format (replace l/min with your unit)
     }
 
-    FlowRateData[] flowRateData = new FlowRateData[0]; // Initialize empty array
+
 
     protected override void OnInitialized()
     {
-        GenerateRandomFlowRateData();
+        AddFlowRateData(FlowRateValue);
     }
 
-    void GenerateRandomFlowRateData()
-    {
-        Random random = new Random();
-        flowRateData = new FlowRateData[dataPoints];
-        for (int i = 0; i < dataPoints; i++)
-        {
-            double baseFlowRate = 20.0; // Base flowRate (20)
-            double deviation = random.NextDouble() * 2 - 0.5; // Random deviation between -1.5 AND+1.5
-            double flowRate = baseFlowRate + deviation;
-
-            flowRateData[i] = new FlowRateData
-                {
-                    Time = i, // Replace with actual time values if needed
-                    FlowRate = flowRate
-                };
-        }
-    }
+    
 }

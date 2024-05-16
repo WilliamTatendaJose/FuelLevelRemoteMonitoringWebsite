@@ -1,12 +1,89 @@
 @page "/pumps--data"
-
+@using Microsoft.AspNetCore.SignalR.Client
 @attribute [Authorize]
 
 <PageTitle>Motor Parameters</PageTitle>
 <RadzenText Text="Real-time Pump Parameters" TextStyle="Radzen.Blazor.TextStyle.H4" TagName="Radzen.Blazor.TagName.H4" class="mt-6" TextAlign="Radzen.TextAlign.Left"></RadzenText>
 <br />
+@code {
+    private double Voltage;
+    private double Current;
+    private double FlowRate;
+    private double Vibration;
+    private double Temperature;
+}
+
+@foreach (var item in messages)
+{
+    Voltage = @item.Voltage;
+
+    Current = @item.Current;
+    Vibration = @item.Vibration;
+    FlowRate = @item.FlowRate;
+    Temperature = @item.Temperature;
+}
+
 <MotorVibrations />
 <MotorVoltage/>
 <MotorCurrent/>
-<MotorFlowRate/>
+<MotorFlowRate FlowRateValue="@FlowRate"/>
 <MotorTemperature/>
+
+
+
+
+
+
+
+@code {
+    private HubConnection hubConnection; //for connecting to SignalR
+    private List<TelemetryPayload> messages = new(); //List of messages to display
+
+    private readonly HttpClient _httpClient = new HttpClient(); //HttpClient for posting messages
+
+    private readonly string functionAppBaseUri = "http://localhost:7073/api/"; //URL for function app. Leave this as is for now.
+
+    protected override async Task OnInitializedAsync() //actions to do when the page is initialized
+    {
+        //create a hub connection to the function app as we'll go via the function for everything SignalR.
+        hubConnection = new HubConnectionBuilder()
+            .WithUrl(functionAppBaseUri)
+            .Build();
+
+        //Registers handler that will be invoked when the hub method with the specified method name is invoked.
+        hubConnection.On<TelemetryPayload>("telemetryPayload", (telemetryPayload) =>
+        {
+            messages.Add(telemetryPayload);
+            StateHasChanged(); //This tells Blazor that the UI needs to be updated
+        });
+
+        await hubConnection.StartAsync(); //start connection!
+    }
+
+
+
+    //Check we're connected
+    public bool IsConnected =>
+        hubConnection.State == HubConnectionState.Connected;
+
+
+
+    public class TelemetryPayload
+    {
+
+
+        public double Voltage { get; set; }
+        public double Temperature { get; set; }
+        public double Current { get; set; }
+        public double FlowRate { get; set; }
+        public double Vibration { get; set; }
+        public double UndergroundTank1FuelLevel { get; set; }
+
+        public double UndergroundTank2FuelLevel { get; set; }
+
+        public double BurnerFuelLevel { get; set; }
+        public double BoilerFuelLevel { get; set; }
+        public double GeneratorFuelLevel { get; set; }
+
+    }
+}

@@ -1,35 +1,121 @@
 @page "/"
 
+@using Microsoft.AspNetCore.SignalR.Client
 
 @attribute [Authorize]
 <PageTitle>Index</PageTitle>
+
+@code{
+    private double Underground1;
+    private double underground2;
+    private double boiler;
+    private double generator;
+    private double burner;
+}
+
+
 <RadzenText Text="Welcome, Monitor fuel levels in the tanks" TextStyle="Radzen.Blazor.TextStyle.H5" TagName="Radzen.Blazor.TagName.H4" class="mt-6"  TextAlign="Radzen.TextAlign.Left"></RadzenText>
 
+@foreach(var item in messages)
+{
+    Underground1 = @item.UndergroundTank1FuelLevel;
 
+    underground2 = @item.UndergroundTank2FuelLevel;
+    generator = @item.GeneratorFuelLevel;
+    boiler = @item.BoilerFuelLevel;
+    burner = @item.BurnerFuelLevel;
+}
+
+<br />
+    <RadzenRow class="rz-text-align-center" Gap="1rem">
+        <RadzenColumn>
+            <RadzenText Text="Undergound Tank 1 Fuel Level" TextStyle="Radzen.Blazor.TextStyle.H6" TagName="Radzen.Blazor.TagName.H4" class="mt-6" TextAlign="Radzen.TextAlign.Left"></RadzenText>
+        <UndergroundTank FuelLevel="@Underground1" />
+        </RadzenColumn>
+        <RadzenColumn>
+            <RadzenText Text="Undeground Tank 2" TextStyle="Radzen.Blazor.TextStyle.H6" TagName="Radzen.Blazor.TagName.H4" class="mt-6" TextAlign="Radzen.TextAlign.Left"></RadzenText>
+        <UndergroundTank FuelLevel="@underground2" />
+        </RadzenColumn>
+
+    </RadzenRow>
+
+<br/>
+
+    <RadzenRow class="rz-text-align-center" Gap="1rem">
+
+        <RadzenColumn>
+            <RadzenText Text="Burner Fuel Level" TextStyle="Radzen.Blazor.TextStyle.H6" TagName="Radzen.Blazor.TagName.H4" class="mt-6" TextAlign="Radzen.TextAlign.Left"></RadzenText>
+        <UndergroundTank FuelLevel="@burner" />
+        </RadzenColumn>
+        <RadzenColumn>
+            <RadzenText Text="Boiler Tank Fuel Level" TextStyle="Radzen.Blazor.TextStyle.H6" TagName="Radzen.Blazor.TagName.H4" class="mt-6" TextAlign="Radzen.TextAlign.Left"></RadzenText>
+        <UndergroundTank FuelLevel="@boiler" />
+        </RadzenColumn>
+
+    </RadzenRow>
 
 <br />
 
 <RadzenRow class="rz-text-align-center" Gap="1rem">
+	
 	<RadzenColumn>
-		<RadzenText Text="Undergound Tank Fuel Level" TextStyle="Radzen.Blazor.TextStyle.H6" TagName="Radzen.Blazor.TagName.H4" class="mt-6" TextAlign="Radzen.TextAlign.Left"></RadzenText>
-		<UndergroundTank/>
-	</RadzenColumn>
-	<RadzenColumn>
-		<RadzenText Text="Burner Fuel Level" TextStyle="Radzen.Blazor.TextStyle.H6" TagName="Radzen.Blazor.TagName.H4" class="mt-6" TextAlign="Radzen.TextAlign.Left"></RadzenText>
-		<UndergroundTank/>
+		<RadzenText Text="Generator Fuel Level" TextStyle="Radzen.Blazor.TextStyle.H6" TagName="Radzen.Blazor.TagName.H4" class="mt-6" TextAlign="Radzen.TextAlign.Left"></RadzenText>
+		<UndergroundTank FuelLevel="@generator"/>
 	</RadzenColumn>
 	
 </RadzenRow>
 
-<br/>
-<RadzenRow class="rz-text-align-center" Gap="1rem">
-	<RadzenColumn>
-		<RadzenText Text="Boiler Tank Fuel Level" TextStyle="Radzen.Blazor.TextStyle.H6" TagName="Radzen.Blazor.TagName.H4" class="mt-6" TextAlign="Radzen.TextAlign.Left"></RadzenText>
-		<UndergroundTank/>
-	</RadzenColumn>
-	<RadzenColumn>
-		<RadzenText Text="Generator Fuel Level" TextStyle="Radzen.Blazor.TextStyle.H6" TagName="Radzen.Blazor.TagName.H4" class="mt-6" TextAlign="Radzen.TextAlign.Left"></RadzenText>
-		<UndergroundTank/>
-	</RadzenColumn>
-	
-</RadzenRow>
+
+
+@code {
+    private HubConnection hubConnection; //for connecting to SignalR
+    private List<TelemetryPayload> messages = new(); //List of messages to display
+
+    private readonly HttpClient _httpClient = new HttpClient(); //HttpClient for posting messages
+
+    private readonly string functionAppBaseUri = "http://localhost:7073/api/"; //URL for function app. Leave this as is for now.
+
+    protected override async Task OnInitializedAsync() //actions to do when the page is initialized
+    {
+        //create a hub connection to the function app as we'll go via the function for everything SignalR.
+        hubConnection = new HubConnectionBuilder()
+            .WithUrl(functionAppBaseUri)
+            .Build();
+
+        //Registers handler that will be invoked when the hub method with the specified method name is invoked.
+        hubConnection.On<TelemetryPayload>("telemetryPayload", (telemetryPayload) =>
+        {
+            messages.Add( telemetryPayload);
+            StateHasChanged(); //This tells Blazor that the UI needs to be updated
+        });
+
+        await hubConnection.StartAsync(); //start connection!
+    }
+
+
+
+    //Check we're connected
+    public bool IsConnected =>
+        hubConnection.State == HubConnectionState.Connected;
+
+
+
+    public class TelemetryPayload
+    {
+
+
+        public double Voltage { get; set; }
+        public double Temperature { get; set; }
+        public double Current { get; set; }
+        public double FlowRate { get; set; }
+        public double Vibration { get; set; }
+        public double UndergroundTank1FuelLevel { get; set; }
+
+        public double UndergroundTank2FuelLevel { get; set; }
+
+        public double BurnerFuelLevel { get; set; }
+        public double BoilerFuelLevel{ get; set; }
+        public double GeneratorFuelLevel { get; set; }
+
+    }
+}
